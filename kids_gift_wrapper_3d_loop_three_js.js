@@ -897,11 +897,12 @@
       throw new Error('Target container element for KIDS Gift Wrapper 3D Loop was not found.');
     }
 
-    const useTransparentBg = Boolean(
-      options.transparent || targetEl.getAttribute('data-transparent') === 'true'
-    );
+    const useTransparentBg =
+      options.transparent !== undefined
+        ? Boolean(options.transparent)
+        : targetEl.getAttribute('data-transparent') !== 'false';
 
-    // 1. Scene & Pure-White Studio Backdrop (or Transparent Overlay Mode)
+    // 1. Scene & Transparent Overlay (or Optional White Studio Backdrop)
     const scene = new THREE.Scene();
     if (!useTransparentBg) {
       scene.background = new THREE.Color(0xffffff);
@@ -921,6 +922,10 @@
       preserveDrawingBuffer: true,
       powerPreference: 'high-performance'
     });
+    if (useTransparentBg) {
+      renderer.setClearColor(0x000000, 0);
+      renderer.domElement.style.background = 'transparent';
+    }
     renderer.setSize(initWidth, initHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = true;
